@@ -1,0 +1,15 @@
+{
+    "name": "hanphper/mysql-dm",
+    "authors": [
+        {
+            "name": "hanyang",
+            "email": "1070166382@qq.com"
+        }
+    ],
+    "require": {},
+  "autoload": {
+    "psr-4": {
+      "Orm\\": "/"
+    }
+  }
+}
