@@ -20,6 +20,7 @@ class mysqlOrm
     protected $_dbName = null; //数据库名
     protected $_sql = false; //最后一条sql语句
     protected $_where = '';
+    protected $_join = '';
     protected $_order = '';
     protected $_limit = '';
     protected $_field = '*';
@@ -234,10 +235,58 @@ class mysqlOrm
      */
     public function select($tbName = '')
     {
-        $sql = "select " . trim($this->_field) . " from " . $tbName . " " . trim($this->_where) . " " . trim($this->_order) . " " . trim($this->_limit);
+        $join_str = '';
+        if (!empty($this->_join)) {
+            foreach ($this->_join as $value) {
+                $join_str = ' ' . $value['type'] . ' JOIN '.$value['table'].' on ' . $value['condition'];
+            }
+        }
+        $sql = "select " . trim($this->_field) . " from " . $tbName . " " . trim($this->_join) . trim($this->_where) . " " . trim($this->_order) . " " . trim($this->_limit);
         $this->_clear = 1;
         $this->_clear();
         return $this->_doQuery(trim($sql));
+    }
+
+    /**
+     * LEFT JOIN
+     * @access public
+     * @param  mixed $join 关联的表名
+     * @param  mixed $condition 条件
+     * @param  array $bind 参数绑定
+     * @return $this
+     */
+    public function leftJoin($join, $condition = null, $bind = [])
+    {
+        return $this->join($join, $condition, 'LEFT');
+    }
+
+    /**
+     * RIGHT JOIN
+     * @access public
+     * @param  mixed $join 关联的表名
+     * @param  mixed $condition 条件
+     * @param  array $bind 参数绑定
+     * @return $this
+     */
+    public function rightJoin($join, $condition = null, $bind = [])
+    {
+        return $this->join($join, $condition, 'RIGHT');
+    }
+
+    /**
+     * 查询SQL组装 join
+     * @access public
+     * @param  mixed $join 关联的表名
+     * @param  mixed $condition 条件
+     * @param  string $type JOIN类型
+     * @param  array $bind 参数绑定
+     * @return $this
+     */
+    public function join($join, $condition = null, $type = 'INNER')
+    {
+        $this->_join[] = ['table'=>$table, 'type'=>strtoupper($type), 'condition'=>$condition];
+
+        return $this;
     }
 
     /**
