@@ -241,13 +241,34 @@ class mysqlOrm
         $join_str = '';
         if (!empty($this->_join)) {
             foreach ($this->_join as $value) {
-                $join_str = ' ' . $value['type'] . ' JOIN ' . $value['table'] . ' on ' . $value['condition']. ' ';
+                $join_str = ' ' . $value['type'] . ' JOIN ' . $value['table'] . ' on ' . $value['condition'] . ' ';
             }
         }
-        $sql = "select " . trim($this->_field) . " from " . $tbName . " " . trim($join_str) . ' '.trim($this->_where) . " " . trim($this->_order) . " " . trim($this->_limit);
+        $sql = "select " . trim($this->_field) . " from " . $tbName . " " . trim($join_str) . ' ' . trim($this->_where) . " " . trim($this->_order) . " " . trim($this->_limit);
         $this->_clear = 1;
         $this->_clear();
         return $this->_doQuery(trim($sql));
+    }
+
+    /**
+     * 查询函数
+     * @param string $tbName 操作的数据表名
+     * @return array 结果集
+     */
+    public function find($tbName = '')
+    {
+        $join_str = '';
+        if (!empty($this->_join)) {
+            foreach ($this->_join as $value) {
+                $join_str = ' ' . $value['type'] . ' JOIN ' . $value['table'] . ' on ' . $value['condition'] . ' ';
+            }
+        }
+        $sql = "select " . trim($this->_field) . " from " . $tbName . " " . trim($join_str) . ' ' . trim($this->_where) . " " . trim($this->_order) . " " . trim($this->_limit);
+        $this->_clear = 1;
+        $this->_clear();
+        $resultSet = $this->_doQuery(trim($sql));
+        $result = isset($resultSet[0]) ? $resultSet[0] : null;
+        return $result;
     }
 
     /**
@@ -305,7 +326,7 @@ class mysqlOrm
         $this->_where = ' where ';
         $logic = 'and';
         if (is_string($option)) {
-            $this->_where .= ' '.$option;
+            $this->_where .= ' ' . $option;
         } elseif (is_array($option)) {
             foreach ($option as $k => $v) {
                 if (is_array($v)) {
