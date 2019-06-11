@@ -7,6 +7,9 @@
  */
 
 namespace Orm;
+
+use PDO;
+
 class mysqlOrm
 {
 
@@ -20,7 +23,7 @@ class mysqlOrm
     protected $_dbName = null; //数据库名
     protected $_sql = false; //最后一条sql语句
     protected $_where = '';
-    protected $_join = '';
+    protected $_join = [];
     protected $_order = '';
     protected $_limit = '';
     protected $_field = '*';
@@ -238,10 +241,10 @@ class mysqlOrm
         $join_str = '';
         if (!empty($this->_join)) {
             foreach ($this->_join as $value) {
-                $join_str = ' ' . $value['type'] . ' JOIN '.$value['table'].' on ' . $value['condition'];
+                $join_str = ' ' . $value['type'] . ' JOIN ' . $value['table'] . ' on ' . $value['condition']. ' ';
             }
         }
-        $sql = "select " . trim($this->_field) . " from " . $tbName . " " . trim($this->_join) . trim($this->_where) . " " . trim($this->_order) . " " . trim($this->_limit);
+        $sql = "select " . trim($this->_field) . " from " . $tbName . " " . trim($join_str) . ' '.trim($this->_where) . " " . trim($this->_order) . " " . trim($this->_limit);
         $this->_clear = 1;
         $this->_clear();
         return $this->_doQuery(trim($sql));
@@ -284,8 +287,11 @@ class mysqlOrm
      */
     public function join($join, $condition = null, $type = 'INNER')
     {
-        $this->_join[] = ['table'=>$table, 'type'=>strtoupper($type), 'condition'=>$condition];
-
+        $this->_join[] = [
+            'table' => $join,
+            'type' => strtoupper($type),
+            'condition' => $condition
+        ];
         return $this;
     }
 
@@ -299,7 +305,7 @@ class mysqlOrm
         $this->_where = ' where ';
         $logic = 'and';
         if (is_string($option)) {
-            $this->_where .= $option;
+            $this->_where .= ' '.$option;
         } elseif (is_array($option)) {
             foreach ($option as $k => $v) {
                 if (is_array($v)) {
