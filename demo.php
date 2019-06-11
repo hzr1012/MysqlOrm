@@ -1,6 +1,11 @@
 <?php
-require_once './Orm.php';
-
+/**
+ * User: hanyang
+ * Date: 2019/6/10
+ * Time: 9:37
+ */
+require_once './vendor/autoload.php';
+use Orm;
 
 $conf = [];
 $conf['host'] = '127.0.0.1';
@@ -8,7 +13,8 @@ $conf['port'] = 3306;
 $conf['user'] = 'root';
 $conf['passwd'] = 'root';
 $conf['dbname'] = 'test';
-$mysql = new Orm($conf);
+
+$mysql = new Orm\mysqlOrm($conf);
 
 //插入
 $data = array(

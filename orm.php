@@ -6,8 +6,8 @@
  * 连接模式：PDO
  */
 
- 
-class Orm
+namespace Orm;
+class mysqlOrm
 {
 
     protected static $_dbh = null; //静态属性,所有数据库实例共用,避免重复连接数据库
@@ -218,7 +218,7 @@ class Orm
         if (!trim($this->_where)) return false;
         $data = $this->_dataFormat($tbName, $data);
         if (!$data) return;
-        $valArr = '';
+        $valArr = [];
         foreach ($data as $k => $v) {
             $valArr[] = $k . '=' . $v;
         }
